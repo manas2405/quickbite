@@ -9,12 +9,12 @@ const NavBar = () => {
 
   return (
     <div className='navbar'>
-      <h1 className='logo' alt="">QuickBite</h1>
+      <Link to='/' ><h1 className='logo' alt="">QuickBite</h1></Link>
       <ul className='navbar-menu'>
-        <li onClick={() => {setMenu("Home")}} className={menu==="Home" ? "active" : "" }>Home</li>
-        <li onClick={() => {setMenu("Menu")}} className={menu==="Menu" ? "active" : ""}>Menu</li>
-        <li onClick={() => {setMenu("Mobile-app")}} className={menu==="Mobile-app" ? "active" : ""}>Mobile app</li>
-        <li onClick={() => {setMenu("Contact-us")}} className={menu==="Contact-us" ? "active" : ""}>Contact us</li>
+        <Link to='/' ><li onClick={() => {setMenu("Home")}} className={menu==="Home" ? "active" : "" }>Home</li></Link>
+        <Link to='/' ><li onClick={() => {setMenu("Menu")}} className={menu==="Menu" ? "active" : ""}>Menu</li></Link>
+        <Link to='/' ><li onClick={() => {setMenu("Mobile-app")}} className={menu==="Mobile-app" ? "active" : ""}>Mobile app</li></Link>
+        <Link to='/' ><li onClick={() => {setMenu("Contact-us")}} className={menu==="Contact-us" ? "active" : ""}>Contact us</li></Link>
       </ul>
 
       <div className='navbar-right'>
