@@ -37,7 +37,45 @@
     background-color: white;
     font-size: max(1vw, 13px);
     border-radius: 50px;
-    border: none;
     cursor: pointer;
 }
 
+/* Responsiveness */
+
+@media (max-width: 1050px) {
+    .header-contents{
+        max-width: 45%;
+        top: auto; 
+        margin-top: 20px; 
+    }
+    .header-contents h2{
+        margin-top: 20px;
+        font-size: max(3.5vw, 20px); 
+    }
+}
+
+@media (max-width: 750px) {
+    .header-contents{
+        max-width: 65%;
+    }
+    .header-contents p{
+        display: none;
+    }
+    .header-contents button{
+        padding: 2vw 4vw;
+    }
+}
+
+@media (max-width: 400px){
+    .header-contents h2{
+        margin-top: 20px;
+        font-size: max(1.5vw, 19px); 
+    }
+}
+
+@media (max-width: 320px){
+    .header-contents h2{
+        margin-top: 20px;
+        font-size: max(1.5vw, 15px); 
+    }
+}

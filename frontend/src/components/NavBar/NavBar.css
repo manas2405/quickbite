@@ -70,3 +70,72 @@
 .navbar-search-icon img{
     cursor: pointer;
 }
+
+/* Responsiveness */
+
+@media (max-width : 1050px) {
+    .navbar .logo{
+        width: 140px;
+    }
+    .navbar-menu{
+        gap: 20px;
+        font-size: 17px;
+    }
+    .navbar-right{
+        gap: 30px;
+    }
+    .navbar-right img{
+        width: 22px;
+    }
+    .navbar-right button{
+        padding: 8px 25px;
+    }
+}
+
+@media (max-width : 940px) {
+    .navbar-menu li{
+        font-size: 15px;
+    }
+}
+
+@media (max-width : 900px) {
+    .navbar .logo{
+        width: 120px;
+    }
+    .navbar-menu{
+        gap: 15px;
+        font-size: 16px;
+    }
+    .navbar-right{
+        gap: 20px;
+    }
+    .navbar-right img{
+        width: 20px;
+    }
+    .navbar-right button{
+        padding: 7px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width : 865px) {
+    .navbar .logo{
+        font-size: 25px;
+    }
+}
+
+@media (max-width : 750px) {
+    .navbar-menu{
+        display: none;
+    }
+}
+
+@media (max-width: 320px){
+    .navbar-right {
+        gap: 13px;
+    }
+    .navbar-right button{
+        padding: 8px;
+        font-size: 10px;
+    }
+}
