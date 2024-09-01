@@ -73,7 +73,7 @@
     }
 }
 
-@media (max-width: 320px){
+@media (max-width: 370px){
     .header-contents h2{
         margin-top: 20px;
         font-size: max(1.5vw, 15px); 

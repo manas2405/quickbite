@@ -1,29 +1,31 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './NavBar.css'
-import { assets } from '../../assets/assets'
 import { Link } from 'react-router-dom'
+import { StoreContext } from "../../context/StoreContext"
 
-const NavBar = () => {
+const NavBar = ({setShowLogin}) => {
 
-  const [menu, setMenu] = useState("Menu")
+  const [menu, setMenu] = useState("Home")
+
+  const {getTotalCartAmount} = useContext(StoreContext);
 
   return (
     <div className='navbar'>
       <Link to='/' ><h1 className='logo' alt="">QuickBite</h1></Link>
       <ul className='navbar-menu'>
         <Link to='/' ><li onClick={() => {setMenu("Home")}} className={menu==="Home" ? "active" : "" }>Home</li></Link>
-        <Link to='/' ><li onClick={() => {setMenu("Menu")}} className={menu==="Menu" ? "active" : ""}>Menu</li></Link>
-        <Link to='/' ><li onClick={() => {setMenu("Mobile-app")}} className={menu==="Mobile-app" ? "active" : ""}>Mobile app</li></Link>
-        <Link to='/' ><li onClick={() => {setMenu("Contact-us")}} className={menu==="Contact-us" ? "active" : ""}>Contact us</li></Link>
+        <a href='#explore-menu' ><li onClick={() => {setMenu("Menu")}} className={menu==="Menu" ? "active" : ""}>Menu</li></a>
+        <a href='#app-download' ><li onClick={() => {setMenu("Mobile-app")}} className={menu==="Mobile-app" ? "active" : ""}>Mobile app</li></a>
+        <a href='#footer' ><li onClick={() => {setMenu("Contact-us")}} className={menu==="Contact-us" ? "active" : ""}>Contact us</li></a>
       </ul>
 
       <div className='navbar-right'>
-        <img src={assets.search_icon} alt="" />
+        <i className="fa-solid fa-magnifying-glass"></i>
         <div className='navbar-search-icon'>
-          <img src={assets.basket_icon} alt="" />
-          <div className='dot'></div>
+          <Link to='/cart'><i className="fa-solid fa-cart-shopping"></i></Link>
+          <div className={getTotalCartAmount()===0 ? "" : 'dot'}></div>
         </div>
-        <Link to='/login' ><button onClick={() => {setShowLogin(true)}}>Sign in</button></Link>
+        <button onClick={() => {setShowLogin(true)}}>Sign in</button>
       </div>
     </div>
   )

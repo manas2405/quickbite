@@ -23,6 +23,12 @@
     cursor: pointer;
 }
 
+.navbar-menu a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
 .navbar-right{
     display: flex;
     align-items: center;
@@ -53,21 +59,33 @@
     border-bottom: 2px solid #49557e;
 }
 
+.fa-magnifying-glass{
+    cursor: pointer;
+    color: #49557e;
+    font-size: 24px;
+}
+
+.fa-cart-shopping{
+    cursor: pointer;
+    color: #49557e;
+    font-size: 24px;
+}
+
 .navbar-search-icon{
     position: relative;
 }
 
 .navbar-search-icon .dot{
     position: absolute;
-    min-width: 10px;
-    min-height: 10px;
+    min-width: 9px;
+    min-height: 9px;
     background-color: tomato;
     border-radius: 5px;
     top: -8px;
     right: -8px;
 }
 
-.navbar-search-icon img{
+.navbar-search-icon {
     cursor: pointer;
 }
 
@@ -124,18 +142,22 @@
     }
 }
 
-@media (max-width : 750px) {
+@media (max-width : 780px) {
     .navbar-menu{
         display: none;
     }
 }
 
-@media (max-width: 320px){
+@media (max-width: 380px){
     .navbar-right {
         gap: 13px;
     }
     .navbar-right button{
         padding: 8px;
         font-size: 10px;
+    }
+    .fa-cart-shopping,
+    .fa-magnifying-glass{
+        font-size: 16px;
     }
 }

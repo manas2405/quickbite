@@ -7,7 +7,7 @@
     position: relative;
     box-shadow: 0px 0px 10px rgb(184, 140, 132);
     animation: slideInFromLeft 3s ease-out;
-    padding: 20px;
+    padding: 50px;
     border-radius: 20px;
     background: linear-gradient(to right bottom, rgb(255, 102, 71), orange);
 }

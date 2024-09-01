@@ -31,7 +31,7 @@
     scroll-snap-type: x mandatory;
     padding-bottom: 10px;
     flex-grow: 1;
-    scroll-behavior: smooth; /* Smooth scrolling */
+    scroll-behavior: smooth; 
 }
 
 .explore-menu-list::-webkit-scrollbar {
@@ -49,6 +49,7 @@
     cursor: pointer;
     border-radius: 50%;
     transition: 0.2s;
+    cursor: pointer;
 }
 
 .explore-menu-list-item p {
