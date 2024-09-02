@@ -1,0 +1,74 @@
+.otp-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 50px;
+    padding: 100px;
+    background: linear-gradient(to right bottom, rgb(255, 102, 71), orange);
+    animation: fadeIn 2s ease-out;
+    border-radius: 10px;
+}
+
+.otp-popup-container {
+    place-self: center;
+    width: max(23vw, 330px);
+    color: #808080;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 25px 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    animation: fadeIn 0.5s;
+}
+
+.otp-popup-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
+
+.otp-popup-input {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.otp-popup-input input {
+    outline: none;
+    border: 1px solid #c9c9c9;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.otp-popup-container button {
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    color: white;
+    background-color: tomato;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.otp-popup-container button:hover {
+    background-color: rgb(173, 52, 31)
+}
+
+.otp-popup p span {
+    color: tomato;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.otp-popup p span:hover {
+    color: rgb(44, 183, 183);
+}
+
+.otp-redirect {
+    margin-left: 10px;
+    font-size: 17px;
+    font-weight: 500;
+}

@@ -1,0 +1,79 @@
+.signup-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 50px;
+    padding: 100px;
+    background: linear-gradient(to right bottom, rgb(255, 102, 71), orange);
+    animation: fadeIn 2s ease-out;
+    border-radius: 10px;
+}
+
+.signup-popup-container {
+    place-self: center;
+    width: max(23vw, 330px);
+    color: #808080;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 25px 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    animation: fadeIn 0.5s;
+}
+
+.signup-popup-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
+
+.signup-popup-title .fa-xmark {
+    width: 18px;
+    cursor: pointer;
+}
+
+.signup-popup-input {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.signup-popup-input input {
+    outline: none;
+    border: 1px solid #c9c9c9;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.signup-popup-container button {
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    color: white;
+    background-color: tomato;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.signup-popup-container button:hover {
+    background-color: rgb(207, 78, 56);
+}
+
+.signup-popup p span {
+    color: tomato;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.signup-popup p span:hover {
+    color: rgb(183, 183, 44);
+}
+
+.signup-redirect {
+    margin-left: 10px;
+    font-size: 17px;
+    font-weight: 500;
+}

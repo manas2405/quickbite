@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react'
 import './NavBar.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { StoreContext } from "../../context/StoreContext"
 
-const NavBar = ({setShowLogin}) => {
+const NavBar = () => {
 
   const [menu, setMenu] = useState("Home")
-
+  const navigate = useNavigate()
   const {getTotalCartAmount} = useContext(StoreContext);
 
   return (
@@ -25,7 +25,7 @@ const NavBar = ({setShowLogin}) => {
           <Link to='/cart'><i className="fa-solid fa-cart-shopping"></i></Link>
           <div className={getTotalCartAmount()===0 ? "" : 'dot'}></div>
         </div>
-        <button onClick={() => {setShowLogin(true)}}>Sign in</button>
+        <button onClick={() => {navigate('/login')}}>Sign in</button>
       </div>
     </div>
   )
