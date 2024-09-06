@@ -1,36 +1,63 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
-const validator = require('validator')
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const SECRECT_KEY = "abcdefghijklmnop"
 
-const userSchema = new Schema({
-    name:{
-        type : String,
-        required : true
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
     },
-    location : {
-        type : String,
-        required : true
-    },
-    email : {
-        type : String,
-        required : true,
-        unique : true,
-        validator : {
-            validator: function (value) {
-                return validator.isEmail(value);
-            },
-            message: props => `${props.value} is not a valid email address!`
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error("Not Valid Email")
+            }
         }
     },
-    password : {
-        type : String,
-        required : true
+    password: {
+        type: String,
+        required: true,
+        minlength: 6
     },
-    date : {
-        type : Date,
-        default : Date.now
-    }
+    tokens: [
+        {
+            token: {
+                type: String,
+                required: true,
+            }
+        }
+    ]
 });
 
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 12);
+    }
 
-module.exports = mongoose.model('User', userSchema);
+    next();
+});
+
+userSchema.methods.generateAuthtoken = async function(){
+    try {
+        let newtoken = jwt.sign({_id:this._id},SECRECT_KEY,{
+            expiresIn:"1d"
+        });
+
+        this.tokens = this.tokens.concat({token:newtoken});
+        await this.save();
+        return newtoken;
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
+
+// creating model
+const users = new mongoose.model("users", userSchema);
+
+module.exports = users;

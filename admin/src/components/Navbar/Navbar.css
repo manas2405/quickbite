@@ -1,0 +1,51 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4%;
+}
+
+.navbar .logo{
+    width: max(10%, 80px);
+    color: tomato;
+}
+
+.navbar .profile{
+    width: 60px;
+    cursor: pointer;
+}
+
+.admin-panel{
+    margin-left: 80px;
+    margin-top: -10px;
+}
+
+@media (max-width : 1150px) {
+    .admin-panel{
+        margin-left: 70px;
+    }
+}
+
+@media (max-width : 900px) {
+    .admin-panel{
+        margin-left: 60px;
+    }
+}
+
+@media (max-width : 750px) {
+    .admin-panel{
+        margin-left: 50px;
+    }
+}
+
+@media (max-width : 550px) {
+    .admin-panel{
+        margin-left: 40px;
+    }
+}
+
+@media (max-width : 450px) {
+    .admin-panel{
+        margin-left: 30px;
+    }
+}

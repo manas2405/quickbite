@@ -7,6 +7,8 @@ import Footer from './components/Footer/Footer'
 import Login from './pages/Login/Login'
 import SignUp from './pages/SignUp/SignUp'
 import Otp from './pages/Otp/Otp'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {  
   return (
@@ -18,9 +20,10 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/otp" element={<Otp />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route path="user/otp" element={<Otp />} />
         </Routes>
+        <ToastContainer />
       </div>
       <Footer />
     </>
