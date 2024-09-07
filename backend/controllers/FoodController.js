@@ -34,14 +34,22 @@ exports.listFood = async (req, res) => {
 }
 
 exports.removeFood = async (req, res) => {
-    try{
+    try {
         const food = await foodModel.findById(req.body.id);
-        fs.unlink(`uploads/${food.image}`, () => {});
+        if (!food) {
+            return res.status(404).json({ success: false, message: "Food item not found." });
+        }
+
+        fs.unlink(`uploads/${food.image}`, (err) => {
+            if (err) {
+                console.log('Failed to delete image:', err);
+            }
+        });
+
         await foodModel.findByIdAndDelete(req.body.id);
-        res.json({succes : true, message : "Food item deleted successfully."});
-    }
-    catch (error){
+        res.json({ success: true, message: "Food item deleted successfully." }); 
+    } catch (error) {
         console.log(error);
-        res.status({success : false, message : "Error"})
+        res.status(500).json({ success: false, message: "Error deleting food item." }); 
     }
-}
+};
