@@ -39,16 +39,16 @@ exports.removeFood = async (req, res) => {
         if (!food) {
             return res.status(404).json({ success: false, message: "Food item not found." });
         }
-
         fs.unlink(`uploads/${food.image}`, (err) => {
-            if (err) {
+            if(err) {
                 console.log('Failed to delete image:', err);
             }
         });
 
         await foodModel.findByIdAndDelete(req.body.id);
         res.json({ success: true, message: "Food item deleted successfully." }); 
-    } catch (error) {
+    } 
+    catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Error deleting food item." }); 
     }
