@@ -21,7 +21,7 @@ const Login = () => {
         const response = await sentOtpFunction(data);
         if (response.status === 200) {
           toast.success("Otp sent successfully.")
-          navigate("/user/otp", { state: email });
+          navigate("/user/otp", { state: email }); 
         } else {
           toast.error(response.response.data.error);
         }

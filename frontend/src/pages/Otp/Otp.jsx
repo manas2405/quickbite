@@ -57,7 +57,6 @@ const Otp = () => {
                     />
                 </div>
                 <button onClick={LoginUser}>Verify</button>
-                <p className='otp-redirect'>Didn’t receive an OTP? <span>Resend OTP</span></p>
             </form>
             <ToastContainer />
         </div>
