@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import './SignUp.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios'; 
+import Spinner from 'react-bootstrap/Spinner';
+import axios from 'axios';
 
 const SignUp = () => {
   const [passhow, setPassShow] = useState(false);
+  const [spiner,setSpinner] = useState(false);
   const navigate = useNavigate();
   const [inputdata, setInputdata] = useState({
     name: "",
@@ -31,16 +33,19 @@ const SignUp = () => {
       toast.error("Enter Valid Email");
     } else if (password === "") {
       toast.error("Enter Your Password");
-    } else if (password.length < 6) {
-      toast.error("Password length minimum 6 characters");
+    } else if (password.length < 8) {
+      toast.error("Password length minimum 8 characters");
     } else {
+      setSpinner(true);
       try {
         const response = await axios.post(`http://localhost:4000/api/user/register`, inputdata);  // API call to register
 
         if (response.status === 200) {
           setInputdata({ name: "", email: "", password: "" });
           toast.success("User registered successfully.");
-          navigate("/login");
+          setTimeout(() => {
+            navigate("/login");
+          }, 3000)
         } else {
           toast.error(response.data.error);
         }
@@ -59,12 +64,18 @@ const SignUp = () => {
         <div className="signup-popup-input">
           <input type="text" name="name" onChange={handleChange} value={inputdata.name} placeholder='Your name' required />
           <input type="email" name="email" onChange={handleChange} value={inputdata.email} placeholder='Your email' required />
-          <input type={!passhow ? "password" : "text"} name="password" onChange={handleChange} value={inputdata.password} placeholder='Your password' required />
-          <div className='showpass' onClick={() => setPassShow(!passhow)}>
-            {!passhow ? "Show" : "Hide"}
+          <div className="password-container">
+            <input type={!passhow ? "password" : "text"} name="password" onChange={handleChange} value={inputdata.password} placeholder='Your password' required />
+            <div className='showpass' onClick={() => setPassShow(!passhow)}>
+              {!passhow ? "Show" : "Hide"}
+            </div>
           </div>
         </div>
-        <button type="submit">Create account</button>
+        <button type="submit">Create account
+        {
+        spiner ? <span><Spinner animation="border" /></span>:""
+        }
+        </button>
         <p className='signup-redirect'>Already have an account? <span onClick={() => navigate('/login')}>Login</span></p>
       </form>
       <ToastContainer />

@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp/SignUp'
 import Otp from './pages/Otp/Otp'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {  
   return (

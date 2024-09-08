@@ -3,11 +3,13 @@ import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';  
+import Spinner from 'react-bootstrap/Spinner';
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [spiner,setSpinner] = useState(false);
 
   const sendOtp = async (e) => {
     e.preventDefault();
@@ -16,6 +18,7 @@ const Login = () => {
     } else if (!email.includes("@")) {
       toast.error("Enter Valid Email !");
     } else {
+      setSpinner(true);
       const data = { email, password };  // Send both email and password
 
       try {
@@ -23,7 +26,10 @@ const Login = () => {
 
         if (response.status === 200) {
           toast.success("Otp sent successfully.");
-          navigate("/otp", { state: { email, password } });  // Pass email and password to OTP page
+          
+          setTimeout(() => {
+            navigate("/otp", { state: { email, password } });  
+          }, 3000);
         } else {
           toast.error(response.data.error);
         }
@@ -43,7 +49,11 @@ const Login = () => {
           <input type="email" onChange={(e) => setEmail(e.target.value)} placeholder='Your email' required />
           <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder='Your password' required />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit">Login
+        {
+          spiner ? <span><Spinner animation="border" /></span>:""
+        }
+        </button>
         <p className='login-redirect'>
           Create a new account? <span onClick={() => navigate('/register')}>Sign Up</span>
         </p>

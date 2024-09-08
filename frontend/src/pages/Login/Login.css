@@ -1,17 +1,18 @@
-.login-popup{
+.login-popup {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 50px;
-    padding: 100px;
+    padding: 50px;
     background: linear-gradient(to right bottom, rgb(255, 102, 71), orange);
-    animation: fadeIn 2s ease-out;
     border-radius: 10px;
+    margin: 50px;
+    animation: fadeIn 2s ease-out;
 }
 
 .login-popup-container {
     place-self: center;
-    width: max(23vw, 330px);
+    width: 90vw;
+    max-width: 400px; /* Limits the width on larger screens */
     color: #808080;
     background-color: white;
     display: flex;
@@ -21,6 +22,7 @@
     border-radius: 8px;
     font-size: 14px;
     animation: fadeIn 0.5s;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Adds a shadow for a cleaner look */
 }
 
 .login-popup-title {
@@ -28,11 +30,6 @@
     justify-content: center;
     align-items: center;
     color: black;
-}
-
-.login-popup-title .fa-xmark {
-    width: 18px;
-    cursor: pointer;
 }
 
 .login-popup-input {
@@ -46,6 +43,9 @@
     border: 1px solid #c9c9c9;
     padding: 10px;
     border-radius: 4px;
+    font-size: 16px;
+    width: 100%; /* Makes the input take the full width */
+    box-sizing: border-box;
 }
 
 .login-popup-container button {
@@ -54,14 +54,15 @@
     border-radius: 4px;
     color: white;
     background-color: tomato;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
+    width: 100%; /* Full-width button */
+    box-sizing: border-box;
 }
 
 .login-popup-container button:hover {
     background-color: rgb(207, 78, 56);
 }
-
 
 .login-popup p span {
     color: tomato;
@@ -69,12 +70,53 @@
     cursor: pointer;
 }
 
-.login-popup p span:hover{
+.login-popup p span:hover {
     color: rgb(183, 183, 44);
 }
 
-.login-redirect{
+.login-redirect {
     margin-left: 10px;
     font-size: 17px;
     font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .login-popup {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .login-popup-container {
+        padding: 20px;
+        width: 100%; /* Ensures the container spans the full width */
+    }
+
+    .login-popup-title {
+        font-size: 18px;
+    }
+
+    .login-popup-container button {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .login-popup-input input {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-popup-container {
+        padding: 15px;
+    }
+
+    .login-popup-title {
+        font-size: 16px;
+    }
+
+    .login-popup-input input {
+        font-size: 14px;
+        padding: 8px;
+    }
 }

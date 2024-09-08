@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import './Otp.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import Spinner from 'react-bootstrap/Spinner';
 import axios from 'axios';
 
 const Otp = () => {
     const [otp, setOtp] = useState("");
+    const [spiner,setSpinner] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -23,6 +25,7 @@ const Otp = () => {
         } else if (otp.length < 6) {
             toast.error("OTP Length must be at least 6 digits");
         } else {
+            setSpinner(true);
             const data = { email, password, otp };  // Send email, password, and OTP to the backend
 
             try {
@@ -33,7 +36,7 @@ const Otp = () => {
 
                     setTimeout(() => {
                         navigate("/");
-                    }, 5000);
+                    }, 3000);
                 } else {
                     toast.error(response.data.error);
                 }
@@ -57,7 +60,11 @@ const Otp = () => {
                         required 
                     />
                 </div>
-                <button onClick={LoginUser}>Verify</button>
+                <button onClick={LoginUser}>Verify
+                {
+                spiner ? <span><Spinner animation="border" /></span>:""
+                }
+                </button>
             </form>
             <ToastContainer />
         </div>
