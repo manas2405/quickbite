@@ -1,232 +1,165 @@
-const users = require("../models/User");
-const userotp = require("../models/Otp");
-const nodemailer = require("nodemailer");
+const userModel = require('../models/UserModel');
+const otpModel = require('../models/OtpModel');  
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
-// email config
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD
-    }
-})
+const validator = require('validator');
+const nodemailer = require('nodemailer'); 
+require('dotenv').config();
 
 
-exports.userregister = async (req, res) => {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-        res.status(400).json({ error: "Please Enter All Input Data" })
-    }
-
-    try {
-        const presuer = await users.findOne({ email: email });
-
-        if (presuer) {
-            res.status(400).json({ error: "This User Already exists" })
-        } 
-        else {
-            const userregister = new users({
-                name, email, password
-            });
-
-            const storeData = await userregister.save();
-            res.status(200).json(storeData);
-        }
-    } catch (error) {
-        res.status(400).json({ error: "Invalid Details", error })
-    }
-
+const generateOtp = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-
-
-// user send otp
-exports.userOtpSend = async (req, res) => {
-    const { email } = req.body;
-
-    if (!email) {
-        res.status(400).json({ error: "Please Enter Your Email" })
-    }
-
-
+// Login user 
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const presuer = await users.findOne({ email: email });
-
-        if (presuer) {
-            const OTP = Math.floor(100000 + Math.random() * 900000);
-
-            const existEmail = await userotp.findOne({ email: email });
-
-
-            if (existEmail) {
-                const updateData = await userotp.findByIdAndUpdate({ _id: existEmail._id }, {
-                    otp: OTP
-                }, { new: true }
-                );
-                await updateData.save();
-
-                const mailOptions = {
-                    from: process.env.EMAIL,
-                    to: email,
-                    subject: "OTP verification",
-                    html: `
-                        <html>
-                            <head>
-                                <style>
-                                    body {
-                                        font-family: Arial, sans-serif;
-                                        background-color: #f4f4f4;
-                                        padding: 20px;
-                                    }
-                                    .container {
-                                        background-color: #fff;
-                                        border-radius: 5px;
-                                        padding: 20px;
-                                        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-                                    }
-                                    h2 {
-                                        color: #333;
-                                    }
-                                    p {
-                                        color: #666;
-                                    }
-                                    .otp {
-                                        font-size: 24px;
-                                        font-weight: bold;
-                                        color: #007bff;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                <div class="container">
-                                    <h2>OTP Verification</h2>
-                                    <p>Hi,</p>
-                                    <p>Your OTP for verification is:</p>
-                                    <p class="otp">${OTP}</p>
-                                </div>
-                            </body>
-                        </html>
-                    `
-                };
-
-
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        console.log("error", error);
-                        res.status(400).json({ error: "email not send" })
-                    } else {
-                        console.log("Email sent", info.response);
-                        res.status(200).json({ message: "Email sent Successfully" })
-                    }
-                })
-
-            } else {
-
-                const saveOtpData = new userotp({
-                    email, otp: OTP
-                });
-
-                await saveOtpData.save();
-                
-                const mailOptions = {
-                    from: process.env.EMAIL,
-                    to: email,
-                    subject: "OTP verification",
-                    html: `
-                        <html>
-                            <head>
-                                <style>
-                                    body {
-                                        font-family: Arial, sans-serif;
-                                        background-color: #f4f4f4;
-                                        padding: 20px;
-                                    }
-                                    .container {
-                                        background-color: #fff;
-                                        border-radius: 5px;
-                                        padding: 20px;
-                                        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-                                    }
-                                    h2 {
-                                        color: #333;
-                                    }
-                                    p {
-                                        color: #666;
-                                    }
-                                    .otp {
-                                        font-size: 24px;
-                                        font-weight: bold;
-                                        color: #007bff;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                <div class="container">
-                                    <h2>OTP Verification</h2>
-                                    <p>Hi,</p>
-                                    <p>Your OTP for verification is:</p>
-                                    <p class="otp">${OTP}</p>
-                                </div>
-                            </body>
-                        </html>
-                    `
-                };
-                
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        console.log("error", error);
-                        res.status(400).json({ error: "email not send" })
-                    } 
-                    else {
-                        console.log("Email sent", info.response);
-                        res.status(200).json({ message: "Email sent Successfully" })
-                    }
-                })
-            }
-        } else {
-            res.status(400).json({ error: "This User Not Exist In our Db" })
-        }
-    } catch (error) {
-        res.status(400).json({ error: "Invalid Details", error })
-    }
-};
-
-exports.userLogin = async (req, res) => {
-    const { email, password, otp } = req.body; 
-
-    if (!email || !password || !otp) { 
-        return res.status(400).json({ error: "Please provide email, password, and OTP" });
-    }
-
-    try {
-        const otpverification = await userotp.findOne({ email: email });
-
-        if (!otpverification) {
-            return res.status(400).json({ error: "OTP not found for this email" });
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: "User doesn't exist" });
         }
 
-        if (otpverification.otp !== otp) {
-            return res.status(400).json({ error: "Invalid OTP" });
-        }
-
-        const preuser = await users.findOne({ email: email });
-
-        if (!preuser) {
-            return res.status(400).json({ error: "User not found" });
-        }
-
-        const isMatch = await bcrypt.compare(password, preuser.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ error: "Invalid password" });
+            return res.json({ success: false, message: "Invalid credentials" });
         }
 
-        const token = await preuser.generateAuthtoken();
-        return res.status(200).json({ message: "User Login Successfully Done", userToken: token });
+        // Generate OTP using Math.random()
+        const otp = generateOtp();
+
+        // Check if an OTP already exists for this email
+        let existingOtp = await otpModel.findOne({ email });
+        if (existingOtp) {
+            // Update the existing OTP
+            existingOtp.otp = otp;
+            await existingOtp.save();
+        } else {
+            // Create a new OTP entry
+            const newOtp = new otpModel({ email, otp });
+            await newOtp.save();
+        }
+
+        // Send OTP via email
+        await sendOtpEmail(email, otp);
+
+        res.json({ success: true, message: "OTP sent to your email." });
     } catch (error) {
-        console.error("Error during login:", error); 
-        return res.status(500).json({ error: "Server error", details: error.message });
+        console.log(error);
+        res.json({ success: false, message: "An error occurred while logging in." });
+    }
+};
+
+// Function to send OTP via email
+const sendOtpEmail = async (email, otp) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL, 
+            pass: process.env.PASSWORD 
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "OTP Verification",
+        html: `
+            <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+                        .container { background-color: #fff; border-radius: 5px; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+                        h2 { color: #333; }
+                        p { color: #666; }
+                        .otp { font-size: 24px; font-weight: bold; color: #007bff; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2>OTP Verification</h2>
+                        <p>Hi,</p>
+                        <p>Your OTP for verification is:</p>
+                        <p class="otp">${otp}</p>
+                        <p>This OTP is valid for 5 minutes.</p>
+                    </div>
+                </body>
+            </html>
+        `
+    };
+
+    return transporter.sendMail(mailOptions);
+};
+
+// OTP verification
+exports.verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    try {
+        // Find the OTP record in the database
+        const otpRecord = await otpModel.findOne({ email });
+
+        if (!otpRecord) {
+            return res.json({ success: false, message: 'No OTP sent to this email' });
+        }
+
+        // Validate OTP
+        if (otpRecord.otp !== otp) {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
+
+        // OTP is valid, proceed to create token
+        const user = await userModel.findOne({ email });
+        const token = createToken(user._id);
+
+        // Delete OTP after successful verification
+        await otpModel.deleteOne({ email });
+
+        res.json({ success: true, message: "User logged in successfully", token: token });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: 'Error verifying OTP' });
+    }
+};
+
+// Helper function to create JWT token
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: "20h" });
+};
+
+// Register user
+exports.registerUser = async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        const existEmail = await userModel.findOne({ email });
+        if (existEmail) {
+            return res.json({ success: false, message: 'User already exists' });
+        }
+
+        // Validate email format
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: 'Invalid email' });
+        }
+
+        // Ensure strong password
+        if (password.length < 8) {
+            return res.json({ success: false, message: 'Password must be at least 8 characters long' });
+        }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Create new user
+        const newUser = new userModel({ name, email, password: hashedPassword });
+        const user = await newUser.save();
+
+        // Create JWT token
+        const token = createToken(user._id);
+        res.json({ success: true, message: "User created successfully", token: token });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: 'Error occurred during registration' });
     }
 };
 

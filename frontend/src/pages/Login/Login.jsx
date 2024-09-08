@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { sentOtpFunction } from "../../services/Api";
+import axios from 'axios';  
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,14 +16,16 @@ const Login = () => {
     } else if (!email.includes("@")) {
       toast.error("Enter Valid Email !");
     } else {
-      const data = { email };
+      const data = { email, password };  // Send both email and password
+
       try {
-        const response = await sentOtpFunction(data);
+        const response = await axios.post(`http://localhost:4000/api/user/login`, data);  
+
         if (response.status === 200) {
-          toast.success("Otp sent successfully.")
-          navigate("/user/otp", { state: email }); 
+          toast.success("Otp sent successfully.");
+          navigate("/otp", { state: { email, password } });  // Pass email and password to OTP page
         } else {
-          toast.error(response.response.data.error);
+          toast.error(response.data.error);
         }
       } catch (error) {
         toast.error("An error occurred. Please try again.");
@@ -43,8 +45,7 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
         <p className='login-redirect'>
-          Create a new account?{' '}
-          <span onClick={() => navigate('/register')}>Sign Up</span>
+          Create a new account? <span onClick={() => navigate('/register')}>Sign Up</span>
         </p>
       </form>
       <ToastContainer />

@@ -21,7 +21,7 @@ function App() {
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<SignUp />} />
-          <Route path="user/otp" element={<Otp />} />
+          <Route path="/otp" element={<Otp />} />
         </Routes>
         <ToastContainer />
       </div>

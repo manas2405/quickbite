@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './Otp.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { userVerify } from "../../services/Api";
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 const Otp = () => {
     const [otp, setOtp] = useState("");
@@ -12,8 +12,9 @@ const Otp = () => {
     const LoginUser = async (e) => {
         e.preventDefault();
 
-        const password = location.state.password; 
+        // Get the email and password from the location state
         const email = location.state.email; 
+        const password = location.state.password; 
 
         if (otp === "") {
             toast.error("Enter Your OTP");
@@ -22,14 +23,14 @@ const Otp = () => {
         } else if (otp.length < 6) {
             toast.error("OTP Length must be at least 6 digits");
         } else {
-            const data = { email, password, otp }; 
+            const data = { email, password, otp };  // Send email, password, and OTP to the backend
 
             try {
-                const response = await userVerify(data);
+                const response = await axios.post(`http://localhost:4000/api/user/otp`, data);  
                 if (response.status === 200) {
-                    localStorage.setItem("userdbtoken", response.data.userToken);
+                    localStorage.setItem("userdbtoken", response.data.userToken);  // Store the token in localStorage
                     toast.success(response.data.message);
-                    
+
                     setTimeout(() => {
                         navigate("/");
                     }, 5000);

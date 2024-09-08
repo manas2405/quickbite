@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './SignUp.css';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { registerfunction } from "../../services/Api";
+import axios from 'axios'; 
 
 const SignUp = () => {
   const [passhow, setPassShow] = useState(false);
@@ -22,6 +22,7 @@ const SignUp = () => {
     e.preventDefault();
     const { name, email, password } = inputdata;
 
+    // Input validation
     if (name === "") {
       toast.error("Enter Your Name");
     } else if (email === "") {
@@ -34,14 +35,14 @@ const SignUp = () => {
       toast.error("Password length minimum 6 characters");
     } else {
       try {
-        const response = await registerfunction(inputdata);
+        const response = await axios.post(`http://localhost:4000/api/user/register`, inputdata);  // API call to register
+
         if (response.status === 200) {
           setInputdata({ name: "", email: "", password: "" });
           toast.success("User registered successfully.");
           navigate("/login");
-        } 
-        else {
-          toast.error(response.response.data.error);
+        } else {
+          toast.error(response.data.error);
         }
       } catch (error) {
         toast.error("An error occurred. Please try again.");
