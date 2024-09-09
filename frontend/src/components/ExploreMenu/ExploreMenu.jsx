@@ -5,16 +5,6 @@ import { menu_list } from '../../assets/assets';
 const ExploreMenu = ({ category, setCategory }) => {
   const menuRef = useRef(null);
 
-  const scroll = (direction) => {
-    const { current } = menuRef;
-    const scrollAmount = 50; 
-    const scrollOptions = {
-      left: direction === 'left' ? current.scrollLeft - scrollAmount : current.scrollLeft + scrollAmount,
-      behavior: 'smooth',
-    };
-    current.scrollTo(scrollOptions);
-  };
-
   return (
     <div className='explore-menu' id='explore-menu'>
       <h1>Explore our menu</h1>
@@ -25,9 +15,6 @@ const ExploreMenu = ({ category, setCategory }) => {
         meal at a time.
       </p>
       <div className='explore-menu-container'>
-        <button className='scroll-arrow left' onClick={() => scroll('left')}>
-          &#10094;
-        </button>
         <div className='explore-menu-list' ref={menuRef}>
           {menu_list.map((item, index) => (
             <div
@@ -48,9 +35,6 @@ const ExploreMenu = ({ category, setCategory }) => {
             </div>
           ))}
         </div>
-        <button className='scroll-arrow right' onClick={() => scroll('right')}>
-          &#10095;
-        </button>
       </div>
       <hr />
     </div>

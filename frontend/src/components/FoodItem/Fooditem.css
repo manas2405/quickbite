@@ -92,4 +92,5 @@
 
 .food-item-counter img {
     width: 30px;
+    cursor: pointer;
 }

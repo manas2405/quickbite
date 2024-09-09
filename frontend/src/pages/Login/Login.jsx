@@ -30,7 +30,8 @@ const Login = () => {
           setTimeout(() => {
             navigate("/otp", { state: { email, password } });  
           }, 3000);
-        } else {
+        } 
+        else {
           toast.error(response.data.error);
         }
       } catch (error) {

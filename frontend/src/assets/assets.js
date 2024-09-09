@@ -287,7 +287,7 @@ export const food_list = [
         _id: "24",
         name: "Rice Zucchini",
         image: food_24,
-        price: 12,
+        price: (12 * conversionRate).toFixed(2),
         description: "Food provides essential nutrients for overall health and well-being",
         category: "Pure Veg"
     },

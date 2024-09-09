@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './Otp.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Spinner from 'react-bootstrap/Spinner';
 import axios from 'axios';
+import { StoreContext } from '../../context/StoreContext';
 
 const Otp = () => {
     const [otp, setOtp] = useState("");
     const [spiner,setSpinner] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+
+    const { token, setToken } = useContext(StoreContext)
 
     const LoginUser = async (e) => {
         e.preventDefault();
@@ -30,10 +33,12 @@ const Otp = () => {
 
             try {
                 const response = await axios.post(`http://localhost:4000/api/user/otp`, data);  
-                if (response.status === 200) {
-                    localStorage.setItem("userdbtoken", response.data.userToken);  // Store the token in localStorage
+                if (response.data.success) {
+                    localStorage.setItem("userdbtoken", response.data.userToken);  
                     toast.success(response.data.message);
-
+                    setToken(response.data.token);
+                    localStorage.setItem("token", response.data.token)
+                    
                     setTimeout(() => {
                         navigate("/");
                     }, 3000);
