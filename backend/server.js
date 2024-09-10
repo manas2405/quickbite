@@ -3,6 +3,7 @@ const app = express();
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/UserRoutes');
 const foodRoutes = require('./routes/FoodRoutes');
+const cartRoutes = require('./routes/CartRoutes');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const PORT = 4000;
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/api/user', userRoutes);
 app.use('/api/food', foodRoutes);
+app.use('/api/cart', cartRoutes);
 app.use("/images", express.static('uploads'));
 
 app.listen(PORT, () => {
