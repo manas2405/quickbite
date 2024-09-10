@@ -4,7 +4,7 @@ import './Cart.css'
 import { StoreContext } from '../../context/StoreContext'
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, getTotalCartAmount, url } = useContext(StoreContext);
   
   const navigate = useNavigate();
 
@@ -26,9 +26,9 @@ const Cart = () => {
             return (
               <React.Fragment key={item._id}>
                 <div className='cart-items-title cart-items-item'>
-                  <img src={item.image} alt="" />
+                  <img src={url+"/images/"+item.image} alt="" />
                   <p>{item.name}</p>
-                  <p>{item.price}</p>
+                  <p>{item.price + ".00"}</p>
                   <p>{cartItems[item._id]}</p>
                   <p>Rs. {item.price * cartItems[item._id]}</p>
                   <p><i className='fa-solid fa-xmark' onClick={() => { removeFromCart(item._id) }}></i></p>
