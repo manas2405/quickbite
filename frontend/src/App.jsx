@@ -7,6 +7,7 @@ import Footer from './components/Footer/Footer'
 import Login from './pages/Login/Login'
 import SignUp from './pages/SignUp/SignUp'
 import Otp from './pages/Otp/Otp'
+import Verify from './pages/Verify/Verify'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/otp" element={<Otp />} />
+          <Route path="/verify" element={<Verify />} />
         </Routes>
         <ToastContainer />
       </div>

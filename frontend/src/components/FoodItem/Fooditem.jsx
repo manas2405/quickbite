@@ -4,12 +4,12 @@ import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 
 const Fooditem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext);
+  const { cartItems = {}, addToCart, removeFromCart, url } = useContext(StoreContext);
 
   return (
     <div className="food-item">
       <div className="food-item-image-container">
-        <img className="food-item-image" src={url+"/images/"+image} alt="" />
+        <img className="food-item-image" src={url + "/images/" + image} alt="" />
         {!cartItems[id] ? (
           <img
             className="add"
@@ -52,5 +52,6 @@ const Fooditem = ({ id, name, price, description, image }) => {
     </div>
   );
 };
+
 
 export default Fooditem;

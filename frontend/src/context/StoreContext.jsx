@@ -12,19 +12,19 @@ const StoreContextProvider = (props) => {
     // Add to cart and update localStorage
     const addToCart = async (itemId) => {
         const newCartItems = { ...cartItems };
-        if (!newCartItems[itemId]) {
-            newCartItems[itemId] = 1;
-        } else {
-            newCartItems[itemId] += 1;
-        }
+        newCartItems[itemId] = (newCartItems[itemId] || 0) + 1;
         setCartItems(newCartItems);
-        localStorage.setItem("cartItems", JSON.stringify(newCartItems)); 
-
+        localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    
         if (token) {
-            await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
+            try {
+                await axios.post(`${url}/api/cart/add`, { itemId }, { headers: { Authorization: `Bearer ${token}` } });
+            } catch (error) {
+                console.error("Error adding item to cart:", error);
+            }
         }
     };
-
+    
     const removeFromCart = async (itemId) => {
         const newCartItems = { ...cartItems };
         if (newCartItems[itemId] > 1) {
@@ -33,18 +33,23 @@ const StoreContextProvider = (props) => {
             delete newCartItems[itemId];
         }
         setCartItems(newCartItems);
-        localStorage.setItem("cartItems", JSON.stringify(newCartItems)); 
-
+        localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    
         if (token) {
-            await axios.post(url + "/api/cart/remove", { itemId }, { headers: { token } });
+            try {
+                await axios.post(`${url}/api/cart/remove`, { itemId }, { headers: { Authorization: `Bearer ${token}` } });
+            } catch (error) {
+                console.error("Error removing item from cart:", error);
+            }
         }
     };
+    
 
     const getTotalCartAmount = () => {
         let total = 0;
         for (let itemId in cartItems) {
             if (cartItems[itemId] > 0) {
-                let itemInfo = food_list.find((product) => product._id === itemId);
+                const itemInfo = food_list.find((product) => product._id === itemId);
                 if (itemInfo) {
                     total += Number(itemInfo.price) * cartItems[itemId];
                 }
@@ -53,33 +58,63 @@ const StoreContextProvider = (props) => {
         return total;
     };
 
-    const loadCartData = async (token) => {
-        const response = await axios.get(url + "/api/cart/get", { headers: { token } });
-        setCartItems(response.data.cartData);
-        localStorage.setItem("cartItems", JSON.stringify(response.data.cartData));
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("cartItems");
+        setToken("");
+        setCartItems({});
     };
+    
+
+    const loadCartData = async (token) => {
+        if (!token) return; 
+    
+        try {
+            const response = await axios.get(`${url}/api/cart/get`, { headers: { Authorization: `Bearer ${token}` } });
+            const cartData = response.data.cartData || {};
+            setCartItems(cartData);
+            localStorage.setItem("cartItems", JSON.stringify(cartData));
+        } catch (error) {
+            console.error("Error loading cart data:", error);
+            if (error.response && error.response.status === 401) {
+                console.log("Unauthorized access, logging out.");
+                handleLogout(); 
+            }
+        }
+    };
+    
 
     const fetchFoodList = async () => {
-        const response = await axios.get(`${url}/api/food/list`);
-        setFoodList(response.data.data);
+        try {
+            const response = await axios.get(`${url}/api/food/list`);
+            setFoodList(response.data.data || []);
+        } catch (error) {
+            console.error("Error fetching food list:", error);
+        }
     };
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
         const storedCartItems = localStorage.getItem("cartItems");
 
-        async function loadData() {
+        const loadData = async () => {
             await fetchFoodList();
-
+        
             if (storedCartItems) {
-                setCartItems(JSON.parse(storedCartItems));
+                try {
+                    const parsedCartItems = JSON.parse(storedCartItems);
+                    setCartItems(parsedCartItems);
+                } catch (error) {
+                    console.error("Error parsing stored cart items:", error);
+                    setCartItems({});
+                }
             }
-
+        
             if (storedToken) {
                 setToken(storedToken);
                 await loadCartData(storedToken);
             }
-        }
+        };
 
         loadData();
     }, []);
@@ -93,7 +128,8 @@ const StoreContextProvider = (props) => {
         getTotalCartAmount,
         token,
         setToken,
-        url
+        url,
+        handleLogout
     };
 
     return (

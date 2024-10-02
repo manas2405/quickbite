@@ -8,6 +8,7 @@ const orderRoutes = require('./routes/OrderRoutes');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const PORT = 4000;
+require("dotenv").config();
 
 connectDB();
 
