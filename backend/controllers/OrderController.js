@@ -52,3 +52,38 @@ exports.verifyOrder = async (req, res) => {
         return res.status(500).json({ success: false, message: "Error verifying the order." });
     }
 }
+
+exports.userOrders = async (req, res) => {
+    try{
+        const orders = await Order.find({userId : req.body.userId})
+        res.json({success : true, data : orders})
+    }
+    catch (error){
+        console.log("Error", error)
+        res.json({success : false, message : "Error fetching orders" })
+    }
+}
+
+// Listing Orders for admin panel
+exports.listOrders = async (req, res) => {
+    try{
+        const orders = await Order.find({});
+        res.json({success : true, data : orders})
+    }
+    catch(error){
+        console.log("Error", error)
+        res.json({success : false, message : "Error fetching orders" })
+    }
+}
+
+// updating the status
+exports.updateStatus = async (req, res) => {
+    try{
+        await Order.findByIdAndUpdate(req.body.orderId, {status : req.body.status});
+        res.json({success : true, message : "Status updated"})
+    }
+    catch (error) {
+        console.log("Error : ", error)
+        res.json({success : false, message : "Error"})
+    }
+}

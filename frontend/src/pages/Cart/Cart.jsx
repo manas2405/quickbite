@@ -1,12 +1,26 @@
-import React, { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './Cart.css'
-import { StoreContext } from '../../context/StoreContext'
+import React, { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Cart.css';
+import { StoreContext } from '../../context/StoreContext';
+import { toast } from "react-toastify";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount, url } = useContext(StoreContext);
-  
+  const { cartItems, food_list, removeFromCart, getTotalCartAmount, url, token } = useContext(StoreContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/cart");
+    }
+  }, [token, navigate]);
+
+  const handleProceedToCheckout = () => {
+    if (getTotalCartAmount() === 0) {
+      toast.error("Select at least one item");
+    } else {
+      navigate('/order');
+    }
+  };
 
   return (
     <div className='cart'>
@@ -26,16 +40,16 @@ const Cart = () => {
             return (
               <React.Fragment key={item._id}>
                 <div className='cart-items-title cart-items-item'>
-                  <img src={url+"/images/"+item.image} alt="" />
+                  <img src={`${url}/images/${item.image}`} alt={item.name} />
                   <p>{item.name}</p>
-                  <p>{item.price + ".00"}</p>
+                  <p>{item.price}.00</p>
                   <p>{cartItems[item._id]}</p>
                   <p>Rs. {item.price * cartItems[item._id]}</p>
-                  <p><i className='fa-solid fa-xmark' onClick={() => { removeFromCart(item._id) }}></i></p>
+                  <p><i className='fa-solid fa-xmark' onClick={() => removeFromCart(item._id)}></i></p>
                 </div>
                 <hr />
               </React.Fragment>
-            )
+            );
           }
           return null;
         })}
@@ -59,21 +73,20 @@ const Cart = () => {
               <b>Rs. {getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 30}</b>
             </div>
           </div>
-          <button onClick={() => navigate('/order')}>Proceed to checkout</button>
+          <button onClick={handleProceedToCheckout}>Proceed to checkout</button>
         </div>
-
         <div className="cart-promo-code">
           <div>
             <p>If you have a promo code, enter it here</p>
             <div className="cart-promocode-input">
-              <input type="text" placeholder='promo code'/>
+              <input type="text" placeholder='promo code' />
               <button>Apply</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Cart;

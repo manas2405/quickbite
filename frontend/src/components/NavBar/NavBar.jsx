@@ -85,7 +85,7 @@ const NavBar = () => {
           <div className="navbar-profile">
             <i className="fa-solid fa-user"></i>
             <ul className="nav-profile-dropdown">
-              <li><img src={assets.bag_icon} alt="" /><p>Orders</p></li> 
+              <li onClick={() => navigate("/myorders")}><img src={assets.bag_icon} alt="" /><p>Orders</p></li> 
               <hr /> 
               <li onClick={logout}><img src={assets.logout_icon} alt="" /><p>Logout</p></li>
             </ul>

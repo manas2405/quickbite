@@ -11,6 +11,7 @@ import Verify from './pages/Verify/Verify'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import MyOrders from './pages/MyOrders/MyOrders'
 
 function App() {  
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/register" element={<SignUp />} />
           <Route path="/otp" element={<Otp />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/myOrders" element={<MyOrders />} />
         </Routes>
         <ToastContainer />
       </div>

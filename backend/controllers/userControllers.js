@@ -25,22 +25,17 @@ exports.loginUser = async (req, res) => {
             return res.json({ success: false, message: "Invalid credentials" });
         }
 
-        // Generate OTP using Math.random()
         const otp = generateOtp();
 
-        // Check if an OTP already exists for this email
         let existingOtp = await otpModel.findOne({ email });
         if (existingOtp) {
-            // Update the existing OTP
             existingOtp.otp = otp;
             await existingOtp.save();
         } else {
-            // Create a new OTP entry
             const newOtp = new otpModel({ email, otp });
             await newOtp.save();
         }
 
-        // Send OTP via email
         await sendOtpEmail(email, otp);
 
         res.json({ success: true, message: "OTP sent to your email." });
@@ -96,23 +91,19 @@ exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
 
     try {
-        // Find the OTP record in the database
         const otpRecord = await otpModel.findOne({ email });
 
         if (!otpRecord) {
             return res.json({ success: false, message: 'No OTP sent to this email' });
         }
 
-        // Validate OTP
         if (otpRecord.otp !== otp) {
             return res.json({ success: false, message: 'Invalid OTP' });
         }
 
-        // OTP is valid, proceed to create token
         const user = await userModel.findOne({ email });
         const token = createToken(user._id);
 
-        // Delete OTP after successful verification
         await otpModel.deleteOne({ email });
 
         res.json({ success: true, message: "User logged in successfully", token: token });
