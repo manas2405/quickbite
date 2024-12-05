@@ -191,6 +191,7 @@
     .navbar-menu{
         gap: 20px;
         font-size: 17px;
+        margin-top: 10px
     }
     .navbar-right{
         gap: 30px;
@@ -203,7 +204,7 @@
     }
 }
 
-@media (max-width : 940px) {
+@media (max-width : 960px) {
     .navbar-menu li{
         font-size: 15px;
     }

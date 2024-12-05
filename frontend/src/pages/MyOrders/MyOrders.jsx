@@ -17,11 +17,10 @@ const MyOrders = () => {
 
       const orders = response.data.data || [];
 
-      // Sort the orders by date in descending order (latest first)
       const sortedOrders = orders.sort((a, b) => {
-        const dateA = new Date(a.date);  // Assuming 'date' is the order date field
+        const dateA = new Date(a.date);  
         const dateB = new Date(b.date);
-        return dateB - dateA;  // This sorts in descending order
+        return dateB - dateA;
       });
 
       setData(sortedOrders);
@@ -59,7 +58,7 @@ const MyOrders = () => {
       case "Food Processing":
         return "white"; 
       case "Out for delivery":
-        return "lightyellow";
+        return "yellow";
       case "Delivered":
         return "lightgreen"; 
       case "Cancelled":
@@ -85,14 +84,13 @@ const MyOrders = () => {
                   style={{ backgroundColor: getStatusBackgroundColor(order.status) }} 
                 >
                   <i className="fa-solid fa-box"></i>
-                  <p>
+                  <div className="order-items">
                     {order.items.map((item, idx) => (
-                      <span key={idx}>
+                      <p key={idx}>
                         {item.name} x {item.quantity}
-                        {idx !== order.items.length - 1 && ", "}
-                      </span>
+                      </p>
                     ))}
-                  </p>
+                  </div>
                   <p>Rs. {order.amount}.00</p>
                   <p>Items: {order.items.length}</p>
                   <p><span className='bullet'>&#x25cf;</span><b> {order.status}</b></p>
