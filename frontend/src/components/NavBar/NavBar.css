@@ -150,6 +150,38 @@
     border-top: 1px solid tomato;
 }
 
+.hamburger-menu {
+    display: none;
+}
+
+.navbar-dropdown {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #7689de;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding: 10px 0;
+    z-index: 10;
+}
+
+.navbar-dropdown li {
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navbar-dropdown li:hover {
+    background-color: #fff4f2;
+}
+
+.navbar-dropdown a {
+    text-decoration: none;
+    color: #49557e;
+}
+
 /* Responsiveness */
 
 @media (max-width : 1050px) {
@@ -199,7 +231,7 @@
 
 @media (max-width : 865px) {
     .navbar .logo{
-        font-size: 25px;
+        font-size: 26px;
     }
 }
 
@@ -207,18 +239,51 @@
     .navbar-menu{
         display: none;
     }
+
+    .hamburger-menu {
+        display: block;
+        font-size: 24px;
+        cursor: pointer;
+        margin-right: 15px;
+        color: #49557e;
+    }
+
+    .signin{
+        display: none;
+    }
+}
+
+@media (max-width: 470px){
+    .navbar-right{
+        margin-bottom: 7px;
+    }
 }
 
 @media (max-width: 380px){
+    .navbar .logo{
+        font-size: 24px
+    }
+
     .navbar-right {
         gap: 13px;
+        margin-bottom: 7px;
     }
+    
     .navbar-right button{
         padding: 8px;
         font-size: 10px;
     }
+
     .fa-cart-shopping,
     .fa-magnifying-glass{
-        font-size: 16px;
+        font-size: 18px;
+    }
+
+    .fa-user{
+        font-size: 18px;
+    }
+
+    .hamburger-menu {
+        font-size: 18px;
     }
 }
