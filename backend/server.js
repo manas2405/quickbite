@@ -5,6 +5,7 @@ const userRoutes = require('./routes/UserRoutes');
 const foodRoutes = require('./routes/FoodRoutes');
 const cartRoutes = require('./routes/CartRoutes');
 const orderRoutes = require('./routes/OrderRoutes');
+const paymentRoutes = require('./routes/PaymentRoutes');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const PORT = 4000;
@@ -20,6 +21,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/food', foodRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/order', orderRoutes);
+app.use('/api/stripe', paymentRoutes);
 app.use("/images", express.static('uploads'));
 
 app.listen(PORT, () => {

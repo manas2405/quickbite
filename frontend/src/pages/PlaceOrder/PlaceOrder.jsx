@@ -1,9 +1,16 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./PlaceOrder.css";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import PaymentForm from "../../components/PaymentForm/PaymentForm";
+import "./PlaceOrder.css";
+
+const stripePromise = loadStripe(
+  "pk_test_51Pxo1aRs1w1em1HoM0gjfK4jtRV6QTcMkaQT38w5OhrHjYqFRXYV6pgk1uz4T5LyvdmgOcdLQnKHSboqf1tRdrIz00O4zxUfTb"
+);
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
@@ -18,8 +25,9 @@ const PlaceOrder = () => {
     country: "",
     phone: "",
   });
-
-  const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
+  const [isPaymentFormVisible, setIsPaymentFormVisible] = useState(false);
+  const { getTotalCartAmount, token, food_list, cartItems, url } =
+    useContext(StoreContext);
 
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -28,89 +36,171 @@ const PlaceOrder = () => {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    let orderItems = [];
 
-    food_list.forEach((item) => {
-      if (cartItems[item._id] > 0) {
-        let itemInfo = item;
-        itemInfo["quantity"] = cartItems[item._id];
-        orderItems.push(itemInfo);
-      }
-    });
+    const orderItems = food_list
+      .filter((item) => cartItems[item._id] > 0)
+      .map((item) => ({
+        ...item,
+        quantity: cartItems[item._id],
+      }));
 
-    let orderData = {
+    const orderData = {
       userId: token ? JSON.parse(atob(token.split(".")[1]))._id : null,
       address: data,
       items: orderItems,
       amount: getTotalCartAmount() + 30,
     };
 
+    if (orderData.amount * 100 < 3750) {
+      toast.error("Minimum order amount must be at least ₹37.50.");
+      return;
+    }
+
     try {
       const response = await axios.post(`${url}/api/order/place`, orderData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log(response.data);
       if (response.data.success) {
-        toast.success("Order placed successfully!");
-        setTimeout(() => {
-          window.location.href = `/verify?success=true&orderId=${response.data.orderId}`;
-        }, 1500);
+        toast.success("Proceeding to payment...");
+        setIsPaymentFormVisible(true);
       } else {
-        alert(response.data.message || "Error placing the order"); 
+        toast.error(response.data.message || "Error placing the order");
       }
     } catch (error) {
-      console.error(error);
-      alert("Error placing the order: " + (error.response?.data?.message || "Server error"));
+      toast.error(error.response?.data?.message || "Server error");
+    }
+  };
+
+  const handlePaymentSuccess = (success) => {
+    if (success) {
+      navigate("/myorders");
+    } else {
+      toast.error("Payment failed. Please try again.");
     }
   };
 
   return (
-    <form className="place-order" onSubmit={placeOrder}>
-      <div className="place-order-left">
-        <p className="title">Delivery Information</p>
-        
-        <div className="multi-fields">
-          <input required name="firstName" onChange={onChangeHandler} value={data.firstName} type="text" placeholder="First Name" />
-          <input required name="lastName" onChange={onChangeHandler} value={data.lastName} type="text" placeholder="Last Name" />
-        </div>
-        <input required name="email" onChange={onChangeHandler} value={data.email} type="text" placeholder="Email address" />
-        <input required name="street" onChange={onChangeHandler} value={data.street} type="text" placeholder="Street" />
-        <div className="multi-fields">
-          <input required name="city" onChange={onChangeHandler} value={data.city} type="text" placeholder="City" />
-          <input required name="state" onChange={onChangeHandler} value={data.state} type="text" placeholder="State" />
-        </div>
-        <div className="multi-fields">
-          <input required name="zipcode" onChange={onChangeHandler} value={data.zipcode} type="text" placeholder="Zip code" />
-          <input required name="country" onChange={onChangeHandler} value={data.country} type="text" placeholder="Country" />
-        </div>
-        <input required type="text" name="phone" onChange={onChangeHandler} value={data.phone} placeholder="Mobile number" />
-      </div>
-      <div className="place-order-right">
-        <div className="cart-total">
-          <h2>Cart Total</h2>
-          <div>
-            <div className="cart-total-details">
-              <p>Subtotal</p>
-              <p>Rs. {getTotalCartAmount()}</p>
+    <>
+      {!isPaymentFormVisible ? (
+        <form className="place-order" onSubmit={placeOrder}>
+          <div className="place-order-left">
+            <p className="title">Delivery Information</p>
+            <div className="multi-fields">
+              <input
+                required
+                name="firstName"
+                onChange={onChangeHandler}
+                value={data.firstName}
+                type="text"
+                placeholder="First Name"
+              />
+              <input
+                required
+                name="lastName"
+                onChange={onChangeHandler}
+                value={data.lastName}
+                type="text"
+                placeholder="Last Name"
+              />
             </div>
-            <hr />
-            <div className="cart-total-details">
-              <p>Delivery Fee</p>
-              <p>Rs. {getTotalCartAmount() === 0 ? 0 : 30}</p>
+            <input
+              required
+              name="email"
+              onChange={onChangeHandler}
+              value={data.email}
+              type="text"
+              placeholder="Email address"
+            />
+            <input
+              required
+              name="street"
+              onChange={onChangeHandler}
+              value={data.street}
+              type="text"
+              placeholder="Street"
+            />
+            <div className="multi-fields">
+              <input
+                required
+                name="city"
+                onChange={onChangeHandler}
+                value={data.city}
+                type="text"
+                placeholder="City"
+              />
+              <input
+                required
+                name="state"
+                onChange={onChangeHandler}
+                value={data.state}
+                type="text"
+                placeholder="State"
+              />
             </div>
-            <hr />
-            <div className="cart-total-details">
-              <b>Total</b>
-              <b>Rs. {getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 30}</b>
+            <div className="multi-fields">
+              <input
+                required
+                name="zipcode"
+                onChange={onChangeHandler}
+                value={data.zipcode}
+                type="text"
+                placeholder="Zip code"
+              />
+              <input
+                required
+                name="country"
+                onChange={onChangeHandler}
+                value={data.country}
+                type="text"
+                placeholder="Country"
+              />
+            </div>
+            <input
+              required
+              type="text"
+              name="phone"
+              onChange={onChangeHandler}
+              value={data.phone}
+              placeholder="Mobile number"
+            />
+          </div>
+          <div className="place-order-right">
+            <div className="cart-total">
+              <h2>Cart Total</h2>
+              <div>
+                <div className="cart-total-details">
+                  <p>Subtotal</p>
+                  <p>Rs. {getTotalCartAmount()}</p>
+                </div>
+                <hr />
+                <div className="cart-total-details">
+                  <p>Delivery Fee</p>
+                  <p>Rs. {getTotalCartAmount() === 0 ? 0 : 30}</p>
+                </div>
+                <hr />
+                <div className="cart-total-details">
+                  <b>Total</b>
+                  <b>
+                    Rs.{" "}
+                    {getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 30}
+                  </b>
+                </div>
+              </div>
+              <button type="submit">Proceed to payment</button>
             </div>
           </div>
-          <button type="submit">Proceed to payment</button>
-        </div>
-      </div>
-    </form>
+        </form> 
+      ) : (
+        <Elements stripe={stripePromise}>
+          <PaymentForm
+            orderData={{ ...data, amount: getTotalCartAmount() + 30 }}
+            onSubmit={handlePaymentSuccess}
+            url={url}
+          />
+        </Elements>
+      )}
+    </>
   );
 };
 

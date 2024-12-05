@@ -44,6 +44,10 @@
     color: #454545;
 }
 
+.order-date{
+    margin-bottom: 20px;
+}
+
 @media (max-width: 900px) {
     .my-orders-order{
         grid-template-columns: 1fr 2fr 1fr;

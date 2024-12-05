@@ -12,6 +12,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyOrders from './pages/MyOrders/MyOrders'
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51Pxo1aRs1w1em1HoM0gjfK4jtRV6QTcMkaQT38w5OhrHjYqFRXYV6pgk1uz4T5LyvdmgOcdLQnKHSboqf1tRdrIz00O4zxUfTb');
 
 function App() {  
   return (
@@ -21,7 +25,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/order" element={<PlaceOrder />} />
+          <Route 
+            path="/order" 
+            element={
+              <Elements stripe={stripePromise}>
+                <PlaceOrder />
+              </Elements>
+            } 
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/otp" element={<Otp />} />

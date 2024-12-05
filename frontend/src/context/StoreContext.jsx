@@ -43,19 +43,19 @@ const StoreContextProvider = (props) => {
             }
         }
     };
-    
 
+    // Calculate total amount in paise
     const getTotalCartAmount = () => {
         let total = 0;
         for (let itemId in cartItems) {
             if (cartItems[itemId] > 0) {
                 const itemInfo = food_list.find((product) => product._id === itemId);
                 if (itemInfo) {
-                    total += Number(itemInfo.price) * cartItems[itemId];
+                    total += Number(itemInfo.price) * cartItems[itemId]; // Ensure price is in paise
                 }
             }
         }
-        return total;
+        return total; 
     };
 
     const handleLogout = () => {
@@ -64,7 +64,6 @@ const StoreContextProvider = (props) => {
         setToken("");
         setCartItems({});
     };
-    
 
     const loadCartData = async (token) => {
         if (!token) return; 
@@ -82,8 +81,8 @@ const StoreContextProvider = (props) => {
             }
         }
     };
-    
 
+    // Fetch food list only once
     const fetchFoodList = async () => {
         try {
             const response = await axios.get(`${url}/api/food/list`);
@@ -94,29 +93,25 @@ const StoreContextProvider = (props) => {
     };
 
     useEffect(() => {
+        fetchFoodList(); // Fetch food list on mount
+
         const storedToken = localStorage.getItem("token");
         const storedCartItems = localStorage.getItem("cartItems");
 
-        const loadData = async () => {
-            await fetchFoodList();
-        
-            if (storedCartItems) {
-                try {
-                    const parsedCartItems = JSON.parse(storedCartItems);
-                    setCartItems(parsedCartItems);
-                } catch (error) {
-                    console.error("Error parsing stored cart items:", error);
-                    setCartItems({});
-                }
+        if (storedCartItems) {
+            try {
+                const parsedCartItems = JSON.parse(storedCartItems);
+                setCartItems(parsedCartItems);
+            } catch (error) {
+                console.error("Error parsing stored cart items:", error);
+                setCartItems({});
             }
-        
-            if (storedToken) {
-                setToken(storedToken);
-                await loadCartData(storedToken);
-            }
-        };
+        }
 
-        loadData();
+        if (storedToken) {
+            setToken(storedToken);
+            loadCartData(storedToken);
+        }
     }, []);
 
     const contextValue = {
