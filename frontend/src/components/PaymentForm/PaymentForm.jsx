@@ -3,7 +3,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
-import "./PaymentForm.css"
+import "./PaymentForm.css";
 
 const PaymentForm = ({ orderData, onSubmit }) => {
   const stripe = useStripe();
@@ -21,14 +21,17 @@ const PaymentForm = ({ orderData, onSubmit }) => {
     const cardElement = elements.getElement(CardElement);
 
     try {
+      // Create a payment intent
       const { data } = await axios.post(
         `${url}/api/stripe/create-payment-intent`,
         {
-          amount: orderData.amount * 100,
+          amount: orderData.amount * 100, // Ensure amount is in the smallest currency unit
         }
       );
 
       const clientSecret = data.clientSecret;
+
+      // Confirm the payment on the client side
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -44,6 +47,7 @@ const PaymentForm = ({ orderData, onSubmit }) => {
         return;
       }
 
+      // Verify the payment on the server side
       const verifyResponse = await axios.post(
         `${url}/api/stripe/confirm-payment`,
         {
@@ -60,7 +64,7 @@ const PaymentForm = ({ orderData, onSubmit }) => {
         onSubmit(false);
       }
     } catch (error) {
-      toast.error("Payment processing failed");
+      toast.error("Payment processing failed: " + error.message);
       onSubmit(false);
     }
   };
